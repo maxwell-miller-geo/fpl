@@ -5,7 +5,11 @@ stringMatch <- function(dataset, guessName = "Discharge", string = T, multi = F)
   }else if(length(matchLocations > 1)){
     if(multi){
       stringName <- colnames(dataset)[matchLocations]
-      return(stringName)
+      # Find the index of the shortest string
+      shortest_index <- which.min(nchar(stringName))
+      # Get the shortest string
+      shortest_string <- stringName[shortest_index]
+      return(shortest_string)
     }
     print("Found multiple matches with data sheet, using first match")
     stringName <- colnames(dataset)[matchLocations][1]
@@ -69,3 +73,4 @@ premier_league_colors <- list(
   WHU = "#7A263A",  # West Ham United
   WOL = "#FDB913"   # Wolverhampton Wanderers
 )
+

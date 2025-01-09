@@ -1,4 +1,17 @@
 # Plot two variables with the linear square regression line
+#' Title
+#'
+#' @param spreadsheet_path
+#' @param x
+#' @param y
+#' @param group
+#' @param pos
+#' @param top_percent
+#'
+#' @return
+#' @export
+#'
+#' @examples
 fpl_plot <- function(spreadsheet_path,x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL){
   # Remove some variables
   position <- points_per_million <- image <- name <- team <- NULL
@@ -16,10 +29,6 @@ fpl_plot <- function(spreadsheet_path,x = "cost", y = "points_per_game", group =
       players <- players[players$total_points >= top_players]
     }
   }
-  # Obtain icons
-
-  # drop na rows
-  players <- stats::na.omit(players)
   # players with more than 200 min
   players <- players[players$minutes > 200]
   # players <- players[players$total_points > 50]
@@ -58,6 +67,8 @@ fpl_plot <- function(spreadsheet_path,x = "cost", y = "points_per_game", group =
     players <- icons(players)
   } else if(group == "names"){
     factors <- "names"
+  } else if(group == "photos"){
+    factors <- "photos"
   }
   # Create a custom arrow with a color (e.g., red)
   #custom_arrow <- arrow(type = "closed", length = unit(0.15, "inches"))

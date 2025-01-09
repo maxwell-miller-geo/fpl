@@ -13,4 +13,6 @@ Imports:
     ggimage,
     ggplot2,
     ggrepel,
+    httr,
+    jsonlite,
     stringr
