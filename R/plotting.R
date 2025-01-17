@@ -1,24 +1,46 @@
 # Plot two variables with the linear square regression line
-#' Title
+#' Plot two variables with a linear square regression
 #'
-#' @param spreadsheet_path
-#' @param x
-#' @param y
-#' @param group
-#' @param pos
-#' @param top_percent
+#' Data or spreadsheet can be obtained from the premier league API. Using
+#' get_player_stats() followed by filter_players() will obtain the current player
+#' records.
 #'
-#' @return
+#' @param spreadsheet input data frame, spreadsheet, or path to data
+#' @param x default: "cost", name of column in spreadsheet variable. Input is flexible
+#' and will return the shortest partial match. E.g., with columns: "cost", "starting_cost",
+#' the "cost" column will be selected because it is shortest.
+#' @param y default: "points_per_game", name of column in spreadsheet variable,
+#' similar to x variable. Will by plotted on the y-axis
+#' @param group default: "names". Group or column to plot categories by.
+#' Options:
+#' "names" - plots points as players display names
+#' "team" - plots points as team icon
+#' "images" - plots points as player images
+#' @param pos default: NULL. Option to filter players by position.
+#' Options:
+#' "GKP" - Goalies
+#' "FWD" - Forwards
+#' "MID" - Midfielders
+#' "DEF" - Defenders
+#' @param top_percent default: NULL. Option to filter players by total points
+#' percentage. Expects values from 0 - 1.
+#'
+#' @return plot of input parameters with linear square regression and regression
+#' coefficients. Additionally, prints out filtered table
 #' @export
 #'
-#' @examples
-fpl_plot <- function(spreadsheet_path,x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL){
+#' @examples \dontrun{
+#' stats <- get_player_stats()
+#' spreadsheet <- filter_players(stats)
+#' fpl_plot(spreadsheet)
+#' }
+fpl_plot <- function(spreadsheet,x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL){
   # Remove some variables
   position <- points_per_million <- image <- name <- team <- NULL
   if(is.character(spreadsheet_path)){
-    players <- data.table::fread(spreadsheet_path)
+    players <- data.table::fread(spreadsheet)
   }else{
-    players <- data.table::data.table(spreadsheet_path)
+    players <- data.table::data.table(spreadsheet)
   }
   # Select by position
   if(!is.null(position)){

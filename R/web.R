@@ -23,6 +23,17 @@ get_current_stats <- function(){
 }
 
 # Filter data elements from web
+#' Filter player elements from the web
+#'
+#' @param data list from api
+#'
+#' @return returns data frame with additional columns, player photo paths, and team abbreviations
+#' @export
+#'
+#' @examples \dontrun{
+#' data_list <- get_current_stats()
+#' players <- filter_players(data_list)
+#' }
 filter_players <- function(data){
 
   # Potential Key Stats to obtain
