@@ -10,7 +10,8 @@ fpl_plot(
   y = "points_per_game",
   group = "names",
   pos = NULL,
-  top_percent = NULL
+  top_percent = NULL,
+  remove_player = NULL
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ Options:
 
 \item{top_percent}{default: NULL. Option to filter players by total points
 percentage. Expects values from 0 - 1.}
+
+\item{remove_player}{default: NULL. Input vector of player(s) to remove players from
+plotting or regression. E.g. the input c("Haaland") will remove him from the table.}
 }
 \value{
 Plot of input parameters with linear square regression and regression

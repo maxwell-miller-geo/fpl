@@ -3,3 +3,4 @@
 export(filter_players)
 export(fpl_plot)
 export(get_current_stats)
+import(data.table)

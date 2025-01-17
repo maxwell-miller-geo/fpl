@@ -24,9 +24,11 @@
 #' "DEF" - Defenders
 #' @param top_percent default: NULL. Option to filter players by total points
 #' percentage. Expects values from 0 - 1.
-#'
+#' @param remove_player default: NULL. Input vector of player(s) to remove players from
+#' plotting or regression. E.g. the input c("Haaland") will remove him from the table.
 #' @return Plot of input parameters with linear square regression and regression
 #' coefficients. Additionally, prints out filtered table.
+#' @import data.table
 #' @export
 #'
 #' @examples \dontrun{
@@ -34,7 +36,8 @@
 #' spreadsheet <- filter_players(stats)
 #' fpl_plot(spreadsheet)
 #' }
-fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL){
+fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL, remove_player = NULL){
+
   #requireNamespace("data.table")
   # Remove some variables
   position <- points_per_million <- image <- name <- team <- NULL
@@ -43,7 +46,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   }else{
     players <- data.table::data.table(spreadsheet)
   }
-
+  # Make sure it stays a data.table
   # Select by position
   if(!is.null(pos)){
     players <- players[position == pos]
@@ -53,12 +56,15 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
       players <- players[players$total_points >= top_players]
     }
   }
-  browser()
   # players with more than 200 min
   players <- players[players$minutes > 200,]
   # players <- players[players$total_points > 50]
   #players <- players[players$cost < 8.5]
-  #players <- players[players$name != "Haaland"]
+  # Remove players from data.table
+  if(!is.null(remove_player)){
+    players <- players[players$name != remove_player]
+  }
+
 
   # Calculate Points Per Million dollars
   players$points_per_million <- as.numeric(players$total_points/players$cost)
@@ -124,9 +130,26 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
     print(players)
     return(p)
   }
+  if(factors == "photos"){
+    p <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
+      ggplot2::geom_abline(intercept = coeff$coefficients[[1]], slope = slope, col = "black") +
+      ggimage::geom_image(ggplot2::aes(image = photo_paths), size = 0.05)+
+      ggplot2::labs(x = beautify(col1), y = beautify(col2), title = paste0("FPL Players: ", pos,"s")) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5), panel.background = ggplot2::element_rect(fill = "grey", color = "grey80")) +
+      ggplot2::annotate("text", x = range(x1)[2]*.88, y = ylimit*1, label = caption, size = 3) +
+      ggplot2::annotate("text", x = range(x1)[2]*.88, y = ylimit*1.26, label = caption2, size = 3)+
+      ggplot2::scale_color_viridis_d(option = "turbo")
+    #theme_update(panel.background = element_rect(fill = "grey", colour = "grey50"))
+    #p + ggplot2::geom_smooth(method = "lm", se = F)
+    if(!is.null(xrange)){
+      p <- p + ggplot2::scale_x_continuous(limits = xrange)
+    }
+    print(players)
+    return(p)
+  }
   if(factors == "name"){
     #require(ggrepel)
-    title <- paste0(beautify(col1),"versus", beautify(col2), ": ", pos)
+    title <- paste0(beautify(col1)," versus ", beautify(col2), ": ", pos)
     p <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
       ggplot2::geom_abline(intercept = coeff$coefficients[[1]], slope = slope, col = "black") +
       # ggplot2::geom_text(aes(label = name)) +
