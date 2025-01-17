@@ -1,6 +1,6 @@
 Package: fpl
 Title: Fantasy Premier League Analysis
-Version: 0.0.0.9000
+Version: 0.1.0
 Authors@R: 
     person("Maxwell", "Miller", , "mmm683@nau.edu", role = c("aut", "cre"))
 Description: Analyze and graph English Premier League Fantasy statistics.
