@@ -18,15 +18,15 @@
 #' "images" - plots points as player images
 #' @param pos default: NULL. Option to filter players by position.
 #' Options:
-#' "GKP" - Goalies
-#' "FWD" - Forwards
-#' "MID" - Midfielders
+#' "GKP" - Goalies,
+#' "FWD" - Forwards,
+#' "MID" - Midfielders,
 #' "DEF" - Defenders
 #' @param top_percent default: NULL. Option to filter players by total points
 #' percentage. Expects values from 0 - 1.
 #'
-#' @return plot of input parameters with linear square regression and regression
-#' coefficients. Additionally, prints out filtered table
+#' @return Plot of input parameters with linear square regression and regression
+#' coefficients. Additionally, prints out filtered table.
 #' @export
 #'
 #' @examples \dontrun{
@@ -34,16 +34,18 @@
 #' spreadsheet <- filter_players(stats)
 #' fpl_plot(spreadsheet)
 #' }
-fpl_plot <- function(spreadsheet,x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL){
+fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL){
+  #requireNamespace("data.table")
   # Remove some variables
   position <- points_per_million <- image <- name <- team <- NULL
-  if(is.character(spreadsheet_path)){
+  if(is.character(spreadsheet)){
     players <- data.table::fread(spreadsheet)
   }else{
     players <- data.table::data.table(spreadsheet)
   }
+
   # Select by position
-  if(!is.null(position)){
+  if(!is.null(pos)){
     players <- players[position == pos]
     if(!is.null(top_percent)){
       # Determine range of points
@@ -51,24 +53,25 @@ fpl_plot <- function(spreadsheet,x = "cost", y = "points_per_game", group = "nam
       players <- players[players$total_points >= top_players]
     }
   }
+  browser()
   # players with more than 200 min
-  players <- players[players$minutes > 200]
+  players <- players[players$minutes > 200,]
   # players <- players[players$total_points > 50]
   #players <- players[players$cost < 8.5]
   #players <- players[players$name != "Haaland"]
 
   # Calculate Points Per Million dollars
-  players$points_per_million <- players$total_points/players$cost
+  players$points_per_million <- as.numeric(players$total_points/players$cost)
   # Calculate color schemes based on abbrev
   players$color_hex <- as.character(premier_league_colors[players$team])
   # Sort players by points per million
-  players <- players[order(-points_per_million)]
+  players <- players[order(-players$points_per_million),]
   # Find the x column
-  col1 <- stringMatch(players, x)
-  col2 <- stringMatch(players, y)
+  col1 <- stringMatch(players, x, multi = T)
+  col2 <- stringMatch(players, y, multi = T)
   # Correlate the two variables
-  x1 <- players[[col1]]
-  y1 <- players[[col2]]
+  x1 <- as.numeric(players[[col1]])
+  y1 <- as.numeric(players[[col2]])
   # Determine the range of x
   xlimit <- range(x1)[2] *.85
   ylimit <- range(y1)[1] * 1.1
@@ -76,6 +79,7 @@ fpl_plot <- function(spreadsheet,x = "cost", y = "points_per_game", group = "nam
   if(ylimit < 0){
     ylimit <- range(y1)[1]*.9
   }
+
   # Regression
   coeff <- stats::lm(y1~x1+0) # linear model coefficients with intercept set at 0
   rsquared <- round(summary(coeff)$r.squared,3)
@@ -88,7 +92,7 @@ fpl_plot <- function(spreadsheet,x = "cost", y = "points_per_game", group = "nam
     factors <- "images"
     players <- icons(players)
   } else if(group == "names"){
-    factors <- "names"
+    factors <- "name"
   } else if(group == "photos"){
     factors <- "photos"
   }
@@ -120,7 +124,7 @@ fpl_plot <- function(spreadsheet,x = "cost", y = "points_per_game", group = "nam
     print(players)
     return(p)
   }
-  if(factors == "names"){
+  if(factors == "name"){
     #require(ggrepel)
     title <- paste0(beautify(col1),"versus", beautify(col2), ": ", pos)
     p <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +

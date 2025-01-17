@@ -31,17 +31,17 @@ Options:
 
 \item{pos}{default: NULL. Option to filter players by position.
 Options:
-"GKP" - Goalies
-"FWD" - Forwards
-"MID" - Midfielders
+"GKP" - Goalies,
+"FWD" - Forwards,
+"MID" - Midfielders,
 "DEF" - Defenders}
 
 \item{top_percent}{default: NULL. Option to filter players by total points
 percentage. Expects values from 0 - 1.}
 }
 \value{
-plot of input parameters with linear square regression and regression
-coefficients. Additionally, prints out filtered table
+Plot of input parameters with linear square regression and regression
+coefficients. Additionally, prints out filtered table.
 }
 \description{
 Data or spreadsheet can be obtained from the premier league API. Using

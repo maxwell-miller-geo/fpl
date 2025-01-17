@@ -4,10 +4,15 @@
 \alias{filter_players}
 \title{Filter player elements from the web}
 \usage{
-filter_players(data)
+filter_players(data, get_photos = F, suppress = T)
 }
 \arguments{
 \item{data}{list from api}
+
+\item{get_photos}{optional boolean: If TRUE, will gather photos from FPL website}
+
+\item{suppress}{option boolean: If FALSE, will print out print messages and
+player photos not found.}
 }
 \value{
 returns data frame with additional columns, player photo paths, and team abbreviations

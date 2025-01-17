@@ -10,6 +10,7 @@
 #' head(weekly_stats) # print stats
 #'
 get_current_stats <- function(){
+
   # API Page
   url <- 'https://fantasy.premierleague.com/api/bootstrap-static/'
 
@@ -26,7 +27,9 @@ get_current_stats <- function(){
 #' Filter player elements from the web
 #'
 #' @param data list from api
-#'
+#' @param get_photos optional boolean: If TRUE, will gather photos from FPL website
+#' @param suppress option boolean: If FALSE, will print out print messages and
+#' player photos not found.
 #' @return returns data frame with additional columns, player photo paths, and team abbreviations
 #' @export
 #'
@@ -34,12 +37,26 @@ get_current_stats <- function(){
 #' data_list <- get_current_stats()
 #' players <- filter_players(data_list)
 #' }
-filter_players <- function(data){
+filter_players <- function(data, get_photos = F, suppress = T){
 
   # Potential Key Stats to obtain
   players <- data$elements
   element_types <- data$element_types
   teams <- data$teams
+
+  # Column names
+  colnames <- names(players)
+  # Attempt to convert columns into numeric values, if you can
+  players[] <- lapply(players, function(x) {
+    # Check if the column can be coerced to numeric
+    if (all(!is.na(as.numeric(as.character(x))))) {
+      # If all values can be converted to numeric, do the conversion
+      as.numeric(as.character(x))
+    } else {
+      # Otherwise, leave the column as is
+      x
+    }
+  })
   # Create a mapping of element_type IDs to position names
   team_mapping <- setNames(teams$short_name, teams$code)
   position_mapping <- setNames(element_types$plural_name_short, element_types$id)
@@ -47,6 +64,9 @@ filter_players <- function(data){
   players$position <- position_mapping[as.character(players$element_type)]
   players$team <- team_mapping[as.character(players$team_code)]
   players$cost <- players$now_cost/10 # millions cost
+  if("web_name" %in% colnames(players)){
+    players$name <- players$web_name
+  }
   # Get the photos
 
   # Base URL for player photos
@@ -64,26 +84,34 @@ filter_players <- function(data){
   dir.create(photo_dir, showWarnings = FALSE)  # Create directory if it doesn't exist
 
   # Download the available photos
-  players$photo_paths <- download_photos(players, photo_dir)
+  players$photo_paths <- download_photos(players, photo_dir, get_photos = get_photos, suppress = suppress)
 
   return(players)
 }
 
 # Download photos helper function
-download_photos <- function(players, photo_dir, header = ""){
+download_photos <- function(players, photo_dir, header = "", get_photos = F, suppress = T){
   players_photos <- sapply(1:nrow(players), function(x){
     file_name <- paste0(photo_dir, "/", players$first_name[x],"_",players$second_name[x], ".png")
     if(file.exists(file_name)){
-      cat("Player", players$web_name[x], "is downloaded.\n")
+      if(!suppress){
+        cat("Player", players$web_name[x], "is downloaded.\n")
+      }
       return(file_name)
     }
-    tryCatch({
-      download.file(players$photo_url[x], file_name, mode = "wb")
-      return(file_name)
-    }, error = function(e) {
-      cat("Failed to download:", players$web_name[x], "\n")
+    if(get_photos){
+      tryCatch({
+        download.file(players$photo_url[x], file_name, mode = "wb")
+        return(file_name)
+      }, error = function(e) {
+        if(!supress){
+          cat("Failed to download:", players$web_name[x], "\n")
+        }
+        return(NA)
+      })
+    }else{
       return(NA)
-    })
+    }
   })
 }
 
@@ -91,7 +119,7 @@ download_photos <- function(players, photo_dir, header = ""){
 # url <- "https://fantasy.premierleague.com/api/bootstrap-static/"
 #
 # # Define the cookies as a single string
-cookie_header <- "OptanonAlertBoxClosed=2024-12-24T19:39:27.910Z; datadome=T~N1ZqK90KQ4_jVYn70j2CKDKk35~yDAvdK18swDL6OYgyO2efjTH34x21Gd9_~oWARdNRkBrdrl8NpY2fW7AvmJC34RpvPSO~Eq1uaIxorJq_q5cIHz7lq4mjsh3Vyc; pl_profile=eyJzIjogIld6SXNPRGMxTXpNMk5qaGQ6MXRWaVBWOkNicjVuSmJNVjV5UndNOWdxZURZRUhpZ1lidUNhRWZpYnl3Y2YzM0poU2ciLCAidSI6IHsiaWQiOiA4NzUzMzY2OCwgImZuIjogIm1heCIsICJsbiI6ICJtaWxsIiwgImZjIjogOH19; OptanonConsent=isGpcEnabled=0&datestamp=Wed+Jan+08+2025+19%3A42%3A10+GMT-0700+(Mountain+Standard+Time)&version=202302.1.0&isIABGlobal=false&hosts=&consentId=5abe3b8a-d1d3-469a-a600-b79c0b109db5&interactionCount=1&landingPath=NotLandingPage&groups=C0001%3A1%2CC0002%3A1%2CC0003%3A1%2CC0004%3A1&geolocation=US%3BAZ&AwaitingReconsent=false"
+
 
 # Make the request with the cookies
 # # Make the request with the cookies
