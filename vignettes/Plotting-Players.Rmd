@@ -1,0 +1,27 @@
+---
+title: "Plotting-Players"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Plotting-Players}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(fpl)
+```
+# Download the data from the official Premier League API at 
+'https://fantasy.premierleague.com/api/bootstrap-static/'
+using the get_
+```{r get-data}
+# Download Premier Leauge Data
+premier_data <- get_premier_stats()
+```
+

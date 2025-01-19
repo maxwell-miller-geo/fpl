@@ -22,7 +22,7 @@ Filter player elements from the web
 }
 \examples{
 \dontrun{
-data_list <- get_current_stats()
+data_list <- get_premier_stats()
 players <- filter_players(data_list)
 }
 }

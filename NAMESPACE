@@ -2,5 +2,5 @@
 
 export(filter_players)
 export(fpl_plot)
-export(get_current_stats)
+export(get_premier_stats)
 import(data.table)

@@ -6,10 +6,10 @@
 #'
 #' @examples
 #' # Get the stats from online
-#' weekly_stats <- get_current_stats()
+#' weekly_stats <- get_premier_stats()
 #' head(weekly_stats) # print stats
 #'
-get_current_stats <- function(){
+get_premier_stats <- function(){
 
   # API Page
   url <- 'https://fantasy.premierleague.com/api/bootstrap-static/'
@@ -34,7 +34,7 @@ get_current_stats <- function(){
 #' @export
 #'
 #' @examples \dontrun{
-#' data_list <- get_current_stats()
+#' data_list <- get_premier_stats()
 #' players <- filter_players(data_list)
 #' }
 filter_players <- function(data, get_photos = F, suppress = T){

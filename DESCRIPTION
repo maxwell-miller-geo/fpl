@@ -16,3 +16,7 @@ Imports:
     httr,
     jsonlite,
     stringr
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

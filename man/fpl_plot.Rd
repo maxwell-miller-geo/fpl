@@ -54,8 +54,8 @@ records.
 }
 \examples{
 \dontrun{
-stats <- get_player_stats()
+stats <- get_premier_stats()
 spreadsheet <- filter_players(stats)
-fpl_plot(spreadsheet)
+fpl_plot(spreadsheet, x = "cost", y = "total_points", group = "names", pos = "FWD")
 }
 }

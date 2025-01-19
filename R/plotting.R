@@ -32,9 +32,9 @@
 #' @export
 #'
 #' @examples \dontrun{
-#' stats <- get_player_stats()
+#' stats <- get_premier_stats()
 #' spreadsheet <- filter_players(stats)
-#' fpl_plot(spreadsheet)
+#' fpl_plot(spreadsheet, x = "cost", y = "total_points", group = "names", pos = "FWD")
 #' }
 fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "names", pos = NULL, top_percent = NULL, remove_player = NULL){
 
