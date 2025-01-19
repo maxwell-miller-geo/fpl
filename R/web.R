@@ -6,10 +6,10 @@
 #'
 #' @examples
 #' # Get the stats from online
-#' weekly_stats <- get_current_stats()
+#' weekly_stats <- get_premier_stats()
 #' head(weekly_stats) # print stats
 #'
-get_current_stats <- function(){
+get_premier_stats <- function(){
 
   # API Page
   url <- 'https://fantasy.premierleague.com/api/bootstrap-static/'
@@ -34,7 +34,7 @@ get_current_stats <- function(){
 #' @export
 #'
 #' @examples \dontrun{
-#' data_list <- get_current_stats()
+#' data_list <- get_premier_stats()
 #' players <- filter_players(data_list)
 #' }
 filter_players <- function(data, get_photos = F, suppress = T){
@@ -67,7 +67,6 @@ filter_players <- function(data, get_photos = F, suppress = T){
   if("web_name" %in% colnames(players)){
     players$name <- players$web_name
   }
-  # Get the photos
 
   # Base URL for player photos
   base_url <- "https://resources.premierleague.com/premierleague/photos/players/110x140/p"
@@ -136,4 +135,20 @@ download_photos <- function(players, photo_dir, header = "", get_photos = F, sup
 # } else {
 #   cat("Request failed. Status code:", status_code(response))
 # }
+#' Get the Premier League fixture data
+#'
+#' @return Fixture list
+#' @export
+#'
+#' @examples fixture_list <- get_fixture_data()
+#'
+get_fixture_data <- function(){
+  # API Page
+  url <- "https://fantasy.premierleague.com/api/fixtures/"
 
+  response <- httr::GET(url, httr::add_headers("user-agent" = "Mozilla/5.0"))
+
+  data <- jsonlite::fromJSON(httr::content(response, as = "text",encoding = "UTF-8"))
+
+  return(data)
+}
