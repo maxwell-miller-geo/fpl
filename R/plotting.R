@@ -127,7 +127,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
     if(!is.null(xrange)){
       p <- p + ggplot2::scale_x_continuous(limits = xrange)
     }
-    print(players)
+    players
     return(p)
   }
   if(factors == "photos"){
@@ -144,7 +144,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
     if(!is.null(xrange)){
       p <- p + ggplot2::scale_x_continuous(limits = xrange)
     }
-    print(players)
+    players
     return(p)
   }
   if(factors == "name"){

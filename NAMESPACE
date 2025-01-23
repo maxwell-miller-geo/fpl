@@ -2,5 +2,6 @@
 
 export(filter_players)
 export(fpl_plot)
+export(get_fixture_data)
 export(get_premier_stats)
 import(data.table)
