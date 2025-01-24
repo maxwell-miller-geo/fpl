@@ -38,7 +38,7 @@ capwords <- function(s, strict = FALSE) {
 }
 
 # Plot icons
-icons <- function(table, icon_path = r"(C:\Users\themi\OneDrive\Documents\PremierLeagueIcons)"){
+icons <- function(table, icon_path = file.path(system.file("extdata", package = "fpl"), "PremierLeagueIcons")){
   #install.packages("ggimage")
   #require(ggimage)
   if(!file.exists(icon_path)){

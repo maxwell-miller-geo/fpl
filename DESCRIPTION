@@ -20,3 +20,4 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://maxwell-miller-geo.github.io/fpl/

@@ -12,16 +12,20 @@
 #' @param y default: "points_per_game", name of column in spreadsheet variable,
 #' similar to x variable. Will by plotted on the y-axis
 #' @param group default: "names". Group or column to plot categories by.
-#' Options:
-#' "names" - plots points as players display names
-#' "team" - plots points as team icon
-#' "images" - plots points as player images
+#' Options: \itemize{
+#' \item"names" - plots points as players display names
+#' \item"teams" - plots points as team icon
+#' \item"photos" - plots points as player images
+#' }
+
 #' @param pos default: NULL. Option to filter players by position.
 #' Options:
-#' "GKP" - Goalies,
-#' "FWD" - Forwards,
-#' "MID" - Midfielders,
-#' "DEF" - Defenders
+#' \itemize{
+#' \item"GKP" - Goalies,
+#' \item"FWD" - Forwards,
+#' \item"MID" - Midfielders,
+#' \item"DEF" - Defenders
+#' }
 #' @param top_percent default: NULL. Option to filter players by total points
 #' percentage. Expects values from 0 - 1.
 #' @param remove_player default: NULL. Input vector of player(s) to remove players from
@@ -94,7 +98,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   # If no factors
   if(is.null(pos)){
     factors <- "position"
-  }else if(group == "images"){
+  }else if(group == "teams"){
     factors <- "images"
     players <- icons(players)
   } else if(group == "names"){
@@ -164,7 +168,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
       )+  # Custom labels+
       ggplot2::labs(x = beautify(col1), y = beautify(col2), title = title) +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5),panel.background = ggplot2::element_rect(fill = "grey80")) +
-      ggplot2::annotate("text", x = xlimit+.5, y = ylimit, label = caption) +
+      ggplot2::annotate("text", x = xlimit+.5, y = ylimit+range(y1)[1]*.25, label = caption) +
       ggplot2::annotate("text", x = xlimit+.5, y = ylimit+0.25, label = caption2)
     #p + ggplot2::geom_smooth(method = "lm", se = F)http://127.0.0.1:38731/graphics/253bf0dd-0e9b-4a17-b13c-fc245f742e3d.png
     if(!is.null(xrange)){

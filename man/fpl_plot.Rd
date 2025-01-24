@@ -25,17 +25,20 @@ the "cost" column will be selected because it is shortest.}
 similar to x variable. Will by plotted on the y-axis}
 
 \item{group}{default: "names". Group or column to plot categories by.
-Options:
-"names" - plots points as players display names
-"team" - plots points as team icon
-"images" - plots points as player images}
+Options: \itemize{
+\item"names" - plots points as players display names
+\item"teams" - plots points as team icon
+\item"photos" - plots points as player images
+}}
 
 \item{pos}{default: NULL. Option to filter players by position.
 Options:
-"GKP" - Goalies,
-"FWD" - Forwards,
-"MID" - Midfielders,
-"DEF" - Defenders}
+\itemize{
+\item"GKP" - Goalies,
+\item"FWD" - Forwards,
+\item"MID" - Midfielders,
+\item"DEF" - Defenders
+}}
 
 \item{top_percent}{default: NULL. Option to filter players by total points
 percentage. Expects values from 0 - 1.}

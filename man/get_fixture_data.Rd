@@ -2,7 +2,7 @@
 % Please edit documentation in R/web.R
 \name{get_fixture_data}
 \alias{get_fixture_data}
-\title{Get the Premier league fixture data}
+\title{Get the Premier League fixture data}
 \usage{
 get_fixture_data()
 }
@@ -10,9 +10,9 @@ get_fixture_data()
 Fixture list
 }
 \description{
-Get the Premier league fixture data
+Get the Premier League fixture data
 }
 \examples{
-fixture_list <- get_fixture_data
+fixture_list <- get_fixture_data()
 
 }

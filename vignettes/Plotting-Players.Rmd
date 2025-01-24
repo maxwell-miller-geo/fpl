@@ -3,8 +3,11 @@ title: "Plotting-Players"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Plotting-Players}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r, include = FALSE}
@@ -14,14 +17,103 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Installation procedure
+
+Since the fpl is a package hosted on Github, you will need to download
+it with the "remotes" package.
+
 ```{r setup}
+# Package set-up
+# install.packages("remotes")
+# library(remotes)
+# remotes::install_github("maxwell-miller-geo/fpl")
 library(fpl)
 ```
-# Download the data from the official Premier League API at 
-'https://fantasy.premierleague.com/api/bootstrap-static/'
-using the get_
+
+# Download the data
+
+from the official Premier League API at
+'<https://fantasy.premierleague.com/api/bootstrap-static/>' using the
+function get_premier_stats()
+
 ```{r get-data}
-# Download Premier Leauge Data
-premier_data <- get_premier_stats()
+# Download Premier League Data
+premier_data <- get_premier_stats() # Grabs current Premier League Data
+
+# Filter data by players
+players <- filter_players(premier_data, get_photos = F) # use default photos on
+# Sample of player data
+head(players[c("team", "web_name", "form", "points_per_game", "cost", "position",  "goals_scored")])
+```
+
+The output player data is a data.frame and can be analyzed or selected
+with additional packages or in-built R scripts. Below is an example of
+finding the top 10 scoring players for a given position.
+
+```{r, dataframe}
+# Select position
+forwards <- players[players$position == "FWD",] # selecting using data.frame methods
+
+# Order the forwards
+column_order <- order(forwards$goals_scored, decreasing = TRUE)
+# Create organize data.frame
+
+forwards_ordered <- forwards[column_order,]
+# Goals Scored
+head(forwards_ordered[1:6]) # Select first 6 cols to display
+```
+## Filtering using data.table
+```{r, datatable}
+# Another way to order columns with an additional package: data.table
+library(data.table)
+
+# Add data.table functionality with data.table
+players_dt <- data.table(players)
+# order by points per game, selected first 6 columns for display
+ordered_forwards <- players_dt[position == "FWD", ][order(-points_per_game)]
+# Points Per Game
+head(ordered_forwards[,1:6]) # Select first 6 cols to display - data.table way
+```
+
+# Now let's plot!
+
+The primary things to remember before plotting is to look at the names
+of the columns that are present.
+
+```{r, colsPresent}
+head(colnames(players), 15)
+```
+
+# Choose two columns you want to plot
+
+For this example, we will plot "cost" versus the "total_points",
+grouping by forwards, and displaying the players by name. Note: There is
+some "smart" matching when inputting the columns, but it works best if
+you can input exactly the column names. It will take a few seconds
+depending on the group.
+
+Some plots may have overlapping points, if there are to many players! 
+
+```{r, plotting1,fig.width=9, fig.height=6, out.width="100%"}
+fpl_plot(players, x = "cost", y = "total_points", group = "names", pos = "FWD")
+```
+
+## Plotting by Team Icon
+```{r, plotting2,fig.width=9, fig.height=6, out.width="100%"}
+fpl_plot(players, x = "cost", y = "total_points", group = "teams", pos = "FWD")
+```
+
+## Plotting by Team Photo
+Note: Some photos might be missing
+```{r, plotting3, fig.width=9, fig.height=6, out.width="100%"}
+fpl_plot(players, x = "cost", y = "total_points", group = "photos", pos = "FWD")
+```
+
+## To many players, no problem
+The plotting function works for almost any subset of the players data.frame.
+So, you can subset or remove some players from a table and then plot! This is
+especially the case with midfielders. Top percent filters by total_points.
+```{r, plotting4, fig.width=9, fig.height=6, out.width="100%"}
+fpl_plot(players, "cost", y = "form", group = "names", pos = "MID", top_percent = .85) # take top 85 percent
 ```
 

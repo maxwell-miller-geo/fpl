@@ -47,7 +47,7 @@ filter_players <- function(data, get_photos = F, suppress = T){
   # Column names
   colnames <- names(players)
   # Attempt to convert columns into numeric values, if you can
-  players[] <- lapply(players, function(x) {
+  players[] <- suppressWarnings(lapply(players, function(x) {
     # Check if the column can be coerced to numeric
     if (all(!is.na(as.numeric(as.character(x))))) {
       # If all values can be converted to numeric, do the conversion
@@ -56,7 +56,7 @@ filter_players <- function(data, get_photos = F, suppress = T){
       # Otherwise, leave the column as is
       x
     }
-  })
+  }))
   # Create a mapping of element_type IDs to position names
   team_mapping <- setNames(teams$short_name, teams$code)
   position_mapping <- setNames(element_types$plural_name_short, element_types$id)
@@ -85,7 +85,18 @@ filter_players <- function(data, get_photos = F, suppress = T){
   # Download the available photos
   players$photo_paths <- download_photos(players, photo_dir, get_photos = get_photos, suppress = suppress)
 
-  return(players)
+  # Reorganize some of the columns
+  select_columns <- c("team", "web_name", "form", "points_per_game", "cost", "position",  "goals_scored")
+
+  # Get other columns that are not selected
+  other_columns <- setdiff(names(players), select_columns)
+
+  # Combine the selected columns with the other columns
+  new_order <- c(select_columns, other_columns)
+
+  # Reorder the data.frame using base R column indexing
+  players_reordered <- players[, new_order]
+  return(players_reordered)
 }
 
 # Download photos helper function
