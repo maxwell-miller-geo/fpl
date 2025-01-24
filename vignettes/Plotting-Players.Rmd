@@ -100,13 +100,13 @@ fpl_plot(players, x = "cost", y = "total_points", group = "names", pos = "FWD")
 
 ## Plotting by Team Icon
 ```{r, plotting2,fig.width=9, fig.height=6, out.width="100%"}
-fpl_plot(players, x = "cost", y = "total_points", group = "teams", pos = "FWD")
+#fpl_plot(players, x = "cost", y = "total_points", group = "teams", pos = "FWD")
 ```
 
 ## Plotting by Team Photo
 Note: Some photos might be missing
 ```{r, plotting3, fig.width=9, fig.height=6, out.width="100%"}
-fpl_plot(players, x = "cost", y = "total_points", group = "photos", pos = "FWD")
+#fpl_plot(players, x = "cost", y = "total_points", group = "photos", pos = "FWD")
 ```
 
 ## To many players, no problem
