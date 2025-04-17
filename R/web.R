@@ -103,6 +103,7 @@ filter_players <- function(data, get_photos = F, suppress = T){
 download_photos <- function(players, photo_dir, header = "", get_photos = F, suppress = T){
   players_photos <- sapply(1:nrow(players), function(x){
     file_name <- paste0(photo_dir, "/", players$first_name[x],"_",players$second_name[x], ".png")
+    #file_name <- paste0(photo_dir, "/", players$we, ".png")
     if(file.exists(file_name)){
       if(!suppress){
         cat("Player", players$web_name[x], "is downloaded.\n")
