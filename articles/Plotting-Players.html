@@ -90,11 +90,11 @@ using the function get_premier_stats()</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">players</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"team"</span>, <span class="st">"web_name"</span>, <span class="st">"form"</span>, <span class="st">"points_per_game"</span>, <span class="st">"cost"</span>, <span class="st">"position"</span>,  <span class="st">"goals_scored"</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   team     web_name form points_per_game cost position goals_scored</span></span>
 <span><span class="co">#&gt; 1  ARS Fábio Vieira  0.0             0.0  5.4      MID            0</span></span>
-<span><span class="co">#&gt; 2  ARS      G.Jesus  3.2             2.5  6.7      FWD            3</span></span>
-<span><span class="co">#&gt; 3  ARS      Gabriel  2.4             4.2  6.4      DEF            3</span></span>
-<span><span class="co">#&gt; 4  ARS      Havertz  3.0             4.3  7.8      FWD            8</span></span>
+<span><span class="co">#&gt; 2  ARS      G.Jesus  0.0             2.5  6.5      FWD            3</span></span>
+<span><span class="co">#&gt; 3  ARS      Gabriel  0.3             4.2  6.2      DEF            3</span></span>
+<span><span class="co">#&gt; 4  ARS      Havertz  0.0             4.6  7.7      FWD            9</span></span>
 <span><span class="co">#&gt; 5  ARS         Hein  0.0             0.0  4.0      GKP            0</span></span>
-<span><span class="co">#&gt; 6  ARS     J.Timber  2.6             3.5  5.6      DEF            1</span></span></code></pre></div>
+<span><span class="co">#&gt; 6  ARS     J.Timber  3.0             3.8  5.7      DEF            1</span></span></code></pre></div>
 <p>The output player data is a data.frame and can be analyzed or
 selected with additional packages or in-built R scripts. Below is an
 example of finding the top 10 scoring players for a given position.</p>
@@ -110,12 +110,12 @@ example of finding the top 10 scoring players for a given position.</p>
 <span><span class="co"># Goals Scored</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">forwards_ordered</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span> <span class="co"># Select first 6 cols to display</span></span>
 <span><span class="co">#&gt;     team web_name form points_per_game cost position</span></span>
-<span><span class="co">#&gt; 464  MCI  Haaland  5.8             6.0 14.8      FWD</span></span>
-<span><span class="co">#&gt; 535  NEW     Isak  8.0             6.8  9.5      FWD</span></span>
-<span><span class="co">#&gt; 584  NFO     Wood  8.6             6.1  7.1      FWD</span></span>
-<span><span class="co">#&gt; 65   AVL  Watkins  6.2             5.0  8.9      FWD</span></span>
-<span><span class="co">#&gt; 141  BRE    Wissa  4.6             5.2  6.2      FWD</span></span>
-<span><span class="co">#&gt; 722  WOL    Cunha  3.2             5.4  6.9      FWD</span></span></code></pre></div>
+<span><span class="co">#&gt; 489  MCI  Haaland  0.0             6.1 14.8      FWD</span></span>
+<span><span class="co">#&gt; 570  NEW     Isak  5.2             6.6  9.5      FWD</span></span>
+<span><span class="co">#&gt; 620  NFO     Wood  0.7             5.9  6.9      FWD</span></span>
+<span><span class="co">#&gt; 67   AVL  Watkins  3.0             4.9  8.9      FWD</span></span>
+<span><span class="co">#&gt; 146  BRE    Wissa  5.3             5.1  6.5      FWD</span></span>
+<span><span class="co">#&gt; 762  WOL    Cunha  2.3             5.6  6.8      FWD</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="filtering-using-data-table">Filtering using data.table<a class="anchor" aria-label="anchor" href="#filtering-using-data-table"></a>
 </h3>
@@ -124,19 +124,19 @@ example of finding the top 10 scoring players for a given position.</p>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Add data.table functionality with data.table</span></span>
-<span><span class="va">players_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/data.table/man/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">players</span><span class="op">)</span></span>
+<span><span class="va">players_dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span><span class="va">players</span><span class="op">)</span></span>
 <span><span class="co"># order by points per game, selected first 6 columns for display</span></span>
 <span><span class="va">ordered_forwards</span> <span class="op">&lt;-</span> <span class="va">players_dt</span><span class="op">[</span><span class="va">position</span> <span class="op">==</span> <span class="st">"FWD"</span>, <span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">points_per_game</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co"># Points Per Game</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">ordered_forwards</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span> <span class="co"># Select first 6 cols to display - data.table way</span></span>
 <span><span class="co">#&gt;      team web_name  form points_per_game  cost position</span></span>
 <span><span class="co">#&gt;    &lt;char&gt;   &lt;char&gt; &lt;num&gt;           &lt;num&gt; &lt;num&gt;   &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:    NEW     Isak   8.0             6.8   9.5      FWD</span></span>
-<span><span class="co">#&gt; 2:    NFO     Wood   8.6             6.1   7.1      FWD</span></span>
-<span><span class="co">#&gt; 3:    MCI  Haaland   5.8             6.0  14.8      FWD</span></span>
-<span><span class="co">#&gt; 4:    WOL    Cunha   3.2             5.4   6.9      FWD</span></span>
-<span><span class="co">#&gt; 5:    BRE    Wissa   4.6             5.2   6.2      FWD</span></span>
-<span><span class="co">#&gt; 6:    AVL  Watkins   6.2             5.0   8.9      FWD</span></span></code></pre></div>
+<span><span class="co">#&gt; 1:    NEW     Isak   5.2             6.6   9.5      FWD</span></span>
+<span><span class="co">#&gt; 2:    MCI  Haaland   0.0             6.1  14.8      FWD</span></span>
+<span><span class="co">#&gt; 3:    NFO     Wood   0.7             5.9   6.9      FWD</span></span>
+<span><span class="co">#&gt; 4:    MCI Marmoush   6.0             5.6   7.6      FWD</span></span>
+<span><span class="co">#&gt; 5:    WOL    Cunha   2.3             5.6   6.8      FWD</span></span>
+<span><span class="co">#&gt; 6:    BRE    Wissa   5.3             5.1   6.5      FWD</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
