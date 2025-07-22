@@ -115,7 +115,7 @@ download_photos <- function(players, photo_dir, header = "", get_photos = F, sup
         download.file(players$photo_url[x], file_name, mode = "wb")
         return(file_name)
       }, error = function(e) {
-        if(!supress){
+        if(!suppress){
           cat("Failed to download:", players$web_name[x], "\n")
         }
         return(NA)

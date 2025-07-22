@@ -91,10 +91,18 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   }
 
   # Regression
-  coeff <- stats::lm(y1~x1+0) # linear model coefficients with intercept set at 0
-  rsquared <- round(summary(coeff)$r.squared,3)
-  slope <- coeff$coefficients[[1]]
+  if(!is.character(players[1,..x1][[1]]) | !is.character(players[1,..y1][[1]])){
+    coeff <- stats::lm(y1~x1+0) # linear model coefficients with intercept set at 0
+    rsquared <- round(summary(coeff)$r.squared,3)
+    slope <- coeff$coefficients[[1]]
+  }else{
+    rsquared <- 0
+    slope <- 0
+  }
 
+  # Remove NA values
+  players <- players[!is.na(players[,x1])]
+  players <- players[!is.na(players[,y1])]
   # If no factors
   if(is.null(pos)){
     factors <- "position"
