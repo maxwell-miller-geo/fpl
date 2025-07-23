@@ -74,3 +74,10 @@ premier_league_colors <- list(
   WOL = "#FDB913"   # Wolverhampton Wanderers
 )
 
+premier_league_color_palette <- list(
+  blue = "#04f5ff",
+  redish = "#e90052",
+  white = "#ffffff",
+  green = "#00ff85",
+  purple = "#38003c"
+)

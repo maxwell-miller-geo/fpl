@@ -61,7 +61,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
     }
   }
   # players with more than 200 min
-  players <- players[players$minutes > 200,]
+  #players <- players[players$minutes > 200,]
   # players <- players[players$total_points > 50]
   #players <- players[players$cost < 8.5]
   # Remove players from data.table
@@ -79,10 +79,15 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   # Find the x column
   col1 <- stringMatch(players, x, multi = T)
   col2 <- stringMatch(players, y, multi = T)
+
   # Correlate the two variables
+  if(!inherits(players[[col1]],"numeric") | !inherits(players[[col2]],"numeric")){
+    return(cat("ERROR: \nx has class", class(players[[col1]]), "expects", "numeric",
+                  "\ny has class", class(players[[col2]]), "expects", "numeric"))
+  }
   x1 <- as.numeric(players[[col1]])
   y1 <- as.numeric(players[[col2]])
-  # Determine the range of x
+  # Determine the range of x for plots
   xlimit <- range(x1)[2] *.85
   ylimit <- range(y1)[1] * 1.1
   ymax <- range(y1)[2]*.9
@@ -101,8 +106,8 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   }
 
   # Remove NA values
-  players <- players[!is.na(players[,x1])]
-  players <- players[!is.na(players[,y1])]
+  # players <- players[!is.na(players[,x1])]
+  # players <- players[!is.na(players[,y1])]
   # If no factors
   if(is.null(pos)){
     factors <- "position"
@@ -114,6 +119,7 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   } else if(group == "photos"){
     factors <- "photos"
   }
+  print(factors)
   # Create a custom arrow with a color (e.g., red)
   #custom_arrow <- arrow(type = "closed", length = unit(0.15, "inches"))
   if(col1 == "cost"){
@@ -124,9 +130,22 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
   # Caption variations
   caption <- paste0("Correlation coefficient (R\u00B2): ", rsquared)
   caption2 <- paste(beautify(col2)," =", round(slope,2), "*",beautify(col1))
+
+  if(factors == "position"){
+    browser()
+    plt <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
+      ggplot2::geom_abline(intercept = coeff$coefficients[[1]], slope = slope, col = "black") +
+      ggimage::geom_image(ggplot2::aes(image = image), size = 0.05)+
+      ggplot2::labs(x = beautify(col1), y = beautify(col2), title = paste0("FPL Players by Team: ", pos,"s")) +
+      ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5), panel.background = ggplot2::element_rect(fill = "grey", color = "grey80")) +
+      ggplot2::annotate("text", x = range(x1)[2]*.88, y = ylimit*1, label = caption, size = 3) +
+      ggplot2::annotate("text", x = range(x1)[2]*.88, y = ylimit*1.26, label = caption2, size = 3)+
+      ggplot2::scale_color_viridis_d(option = "turbo")
+  }
+
   # Separate Plot paths for images and symbols
   if(factors == "images"){
-    p <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
+    plt <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
       ggplot2::geom_abline(intercept = coeff$coefficients[[1]], slope = slope, col = "black") +
       ggimage::geom_image(ggplot2::aes(image = image), size = 0.05)+
       ggplot2::labs(x = beautify(col1), y = beautify(col2), title = paste0("FPL Players by Team: ", pos,"s")) +
@@ -137,15 +156,14 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
     #theme_update(panel.background = element_rect(fill = "grey", colour = "grey50"))
     #p + ggplot2::geom_smooth(method = "lm", se = F)
     if(!is.null(xrange)){
-      p <- p + ggplot2::scale_x_continuous(limits = xrange)
+      plt <- plt + ggplot2::scale_x_continuous(limits = xrange)
     }
-    players
-    return(p)
   }
   if(factors == "photos"){
-    p <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
+    browser()
+    plt <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
       ggplot2::geom_abline(intercept = coeff$coefficients[[1]], slope = slope, col = "black") +
-      ggimage::geom_image(ggplot2::aes(image = photo_paths), size = 0.05)+
+      ggimage::geom_image(ggplot2::aes(image = photo_paths), size = 0.15)+
       ggplot2::labs(x = beautify(col1), y = beautify(col2), title = paste0("FPL Players: ", pos,"s")) +
       ggplot2::theme(plot.title = ggplot2::element_text(hjust = 0.5), panel.background = ggplot2::element_rect(fill = "grey", color = "grey80")) +
       ggplot2::annotate("text", x = range(x1)[2]*.88, y = ylimit*1, label = caption, size = 3) +
@@ -154,15 +172,14 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
     #theme_update(panel.background = element_rect(fill = "grey", colour = "grey50"))
     #p + ggplot2::geom_smooth(method = "lm", se = F)
     if(!is.null(xrange)){
-      p <- p + ggplot2::scale_x_continuous(limits = xrange)
+      plt <- plt + ggplot2::scale_x_continuous(limits = xrange)
     }
-    players
-    return(p)
+
   }
   if(factors == "name"){
     #require(ggrepel)
     title <- paste0(beautify(col1)," versus ", beautify(col2), ": ", pos)
-    p <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
+    plt <- ggplot2::ggplot(players, mapping = ggplot2::aes(x = get(col1), y = get(col2))) +
       ggplot2::geom_abline(intercept = coeff$coefficients[[1]], slope = slope, col = "black") +
       # ggplot2::geom_text(aes(label = name)) +
       # geom_label_repel(aes(label = team, fill = color),  # Map label and fill to columns
@@ -180,9 +197,18 @@ fpl_plot <- function(spreadsheet, x = "cost", y = "points_per_game", group = "na
       ggplot2::annotate("text", x = xlimit+.5, y = ylimit+0.25, label = caption2)
     #p + ggplot2::geom_smooth(method = "lm", se = F)http://127.0.0.1:38731/graphics/253bf0dd-0e9b-4a17-b13c-fc245f742e3d.png
     if(!is.null(xrange)){
-      p <- p + ggplot2::scale_x_continuous(limits = xrange)
+      plt <- plt + ggplot2::scale_x_continuous(limits = xrange)
     }
-    players
   }
-  return(p)
+  # return players spreadsheet and plot
+  players
+  return(plt)
 }
+
+premier_league_color_palette <- list(
+  blue = "#04f5ff",
+  redish = "#e90052",
+  white = "#ffffff",
+  green = "#00ff85",
+  purple = "#38003c"
+)
